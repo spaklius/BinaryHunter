@@ -1,10 +1,16 @@
 # BinaryHunter
 
+![Build](https://github.com/spaklius/BinaryHunter/actions/workflows/build.yml/badge.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-E11D3F)
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)
+![Platform](https://img.shields.io/badge/platform-Windows-1674D1)
+
+![BinaryHunter social preview](docs/social-preview.jpg)
+
 BinaryHunter is a Windows desktop application for searching large binary-file libraries and identifying automotive ECU readouts from their raw content.
 
-Current status: Preview
-
-Runtime: .NET 8 for Windows
+- **Current status:** Preview
+- **Runtime:** .NET 8 for Windows
 
 ## Highlights
 
@@ -14,6 +20,30 @@ Runtime: .NET 8 for Windows
 - Copy identification results, including column headers, from the result grid.
 - View live file format, detected vehicle group and active ECU profile information while a file is being analyzed.
 - Browse supported ECU profiles by vehicle group and see whether full or partial reads are supported.
+
+## Build and run
+
+BinaryHunter currently ships as source. A Windows 10/11 computer and the
+[.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) are required.
+
+```powershell
+git clone https://github.com/spaklius/BinaryHunter.git
+cd BinaryHunter
+dotnet restore BinaryHunter.UI\BinaryHunter.UI.csproj
+dotnet run --project BinaryHunter.UI\BinaryHunter.UI.csproj -c Release
+```
+
+Visual Studio 2022 or newer can also open `BinaryHunter.UI.slnx` directly.
+
+### First run
+
+1. Keep the detector profile on **Auto — all detectors** for normal identification.
+2. Choose **Open ECU file** or drag a supported binary into the application.
+3. Review the detected read format, vehicle group, ECU profile and identifiers.
+4. Use **Binary Search** to find ASCII, hexadecimal or automatically interpreted patterns.
+
+BinaryHunter reads the selected file for analysis. Always work from a backup and
+verify identification results before programming or recovering an ECU.
 
 ## Screenshots
 
@@ -112,6 +142,11 @@ Each new ECU profile is maintained in two layers: strict multi-signal profile de
 - Modified, damaged or unusually packaged files can remove or relocate identification structures.
 - ECU and processor profile inferences should be verified before critical programming or recovery work.
 
+> [!WARNING]
+> BinaryHunter is an analysis aid, not a substitute for validated OEM procedures.
+> Incorrect identification, calibration or flashing can make an ECU or vehicle
+> inoperable. Keep original backups and independently verify every result.
+
 ## Build
 
 From the repository root:
@@ -124,7 +159,7 @@ dotnet build BinaryHunter.UI\BinaryHunter.UI.csproj -c Release --no-restore
 The Windows Release build is generated under:
 
 ```text
-BinaryHunter.UI/bin/Release/net8.0-windows/
+BinaryHunter.UI/bin/Release/net8.0-windows7.0/
 ```
 
 Run `BinaryHunter.UI.exe` from that directory.
@@ -137,6 +172,10 @@ Run `BinaryHunter.UI.exe` from that directory.
 - `BinaryHunter.UI` contains the WPF desktop interface.
 
 New ECU examples should be used to learn repeatable raw structures, not to create a catalogue of known software or hardware numbers.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a change. Security issues
+should be reported using the process in [SECURITY.md](SECURITY.md), never through a
+public issue with customer firmware attached.
 
 ## Repository hygiene
 

@@ -1,0 +1,54 @@
+name: Detector request
+description: Request support or correction for an ECU profile
+title: "[Detector]: "
+labels:
+  - detector
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submit metadata only. Do not attach ECU firmware, VINs or proprietary reports publicly.
+  - type: input
+    id: vehicle
+    attributes:
+      label: Vehicle
+      placeholder: Manufacturer, model, engine and model year
+    validations:
+      required: true
+  - type: input
+    id: ecu
+    attributes:
+      label: ECU manufacturer and expected type
+      placeholder: Bosch EDC17C64
+    validations:
+      required: true
+  - type: input
+    id: read
+    attributes:
+      label: Read method, format and size
+      placeholder: OBD partial read, 4,194,304 bytes
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current BinaryHunter result
+      description: Paste only sanitized identifier names and values.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result and evidence
+      description: Explain how the ECU identity was verified.
+    validations:
+      required: true
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Data handling
+      options:
+        - label: I will not upload firmware or customer data to this public issue.
+          required: true
+        - label: I can provide a lawful sample privately if a maintainer requests it.
+          required: false
