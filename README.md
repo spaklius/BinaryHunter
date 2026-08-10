@@ -15,6 +15,16 @@ Runtime: .NET 8 for Windows
 - View live file format, detected vehicle group and active ECU profile information while a file is being analyzed.
 - Browse supported ECU profiles by vehicle group and see whether full or partial reads are supported.
 
+## Screenshots
+
+### ECU identification
+
+![BinaryHunter ECU identification workspace](docs/screenshots/ecu-identification.jpg)
+
+### Binary search
+
+![BinaryHunter binary search workspace](docs/screenshots/binary-search.jpg)
+
 ## ECU identification
 
 - Runtime identification uses only the uploaded binary. Sidecar TXT/ID files and folder or file names are not used as evidence.
