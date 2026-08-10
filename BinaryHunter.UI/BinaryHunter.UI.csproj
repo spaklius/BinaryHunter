@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows7.0</TargetFramework>
+
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<AssemblyTitle>BinaryHunter</AssemblyTitle>
+		<Product>BinaryHunter</Product>
+		<ApplicationIcon>Assets\BinaryHunter.ico</ApplicationIcon>
+		<Version>1.1.0</Version>
+		<Copyright>BinaryHunter</Copyright>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BinaryHunter.Core\BinaryHunter.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Assets\BinaryHunter.ico" />
+        <Resource Include="Assets\BinaryHunter.Icon.png" />
+        <Resource Include="Assets\BmwMiniGroup.png" />
+        <Resource Include="Assets\PsaGroup.png" />
+        <Resource Include="Assets\VagGroup.png" />
+        <Resource Include="Assets\VagGroupMark.png" />
+        <Resource Include="Assets\BmwMiniGroupMark.png" />
+        <Resource Include="Assets\FordGroupMark.png" />
+        <Resource Include="Assets\HondaGroupMark.png" />
+        <Resource Include="Assets\JaguarLandRoverGroupMark.png" />
+        <Resource Include="Assets\JaguarLandRoverPsaGroupMark.png" />
+        <Resource Include="Assets\MercedesBenzGroupMark.png" />
+        <Resource Include="Assets\MazdaGroupMark.png" />
+        <Resource Include="Assets\OpelVauxhallGmGroupMark.png" />
+        <Resource Include="Assets\PsaStellantisGroupMark.png" />
+        <Resource Include="Assets\RenaultNissanDaciaGroupMark.png" />
+        <Resource Include="Assets\VolvoGroupMark.png" />
+	</ItemGroup>
+
+</Project>

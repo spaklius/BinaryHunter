@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BinaryHunter.Core/BinaryHunter.Core.csproj" />
+  <Project Path="BinaryHunter.UI/BinaryHunter.UI.csproj" />
+</Solution>

@@ -1,0 +1,42 @@
+<Window x:Class="BinaryHunter.UI.AxisEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Axis editor" Icon="Assets/BinaryHunter.ico" Width="680" Height="590"
+        MinWidth="580" MinHeight="450" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="#0D1117" Foreground="#EDF2F7" FontFamily="{StaticResource UiFont}">
+    <Window.Resources>
+        <Style TargetType="TextBox"><Setter Property="Background" Value="#0D1117"/><Setter Property="Foreground" Value="#EDF2F7"/><Setter Property="BorderBrush" Value="#3B4655"/><Setter Property="Padding" Value="8,6"/></Style>
+        <Style TargetType="Button" BasedOn="{StaticResource FuturisticButton}"><Setter Property="Padding" Value="13,7"/><Setter Property="Margin" Value="4,0"/></Style>
+    </Window.Resources>
+    <Grid Margin="18">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <StackPanel Margin="0,0,0,12">
+            <TextBlock Text="AXIS EDITOR" Foreground="#60A5FA" FontWeight="SemiBold" FontSize="{StaticResource MetadataFontSize}"/>
+            <TextBlock x:Name="AxisInfoText" Foreground="#778391" FontSize="{StaticResource MetadataFontSize}" Margin="0,5,0,0"/>
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="70"/><ColumnDefinition Width="*"/><ColumnDefinition Width="70"/><ColumnDefinition Width="*"/><ColumnDefinition Width="60"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock Text="Factor" VerticalAlignment="Center" Foreground="#AAB4C0"/><TextBox x:Name="FactorTextBox" Grid.Column="1" Margin="0,0,10,0"/>
+            <TextBlock Text="Offset" Grid.Column="2" VerticalAlignment="Center" Foreground="#AAB4C0"/><TextBox x:Name="OffsetTextBox" Grid.Column="3" Margin="0,0,10,0"/>
+            <TextBlock Text="Unit" Grid.Column="4" VerticalAlignment="Center" Foreground="#AAB4C0"/><TextBox x:Name="UnitTextBox" Grid.Column="5"/>
+        </Grid>
+        <DataGrid x:Name="ValuesGrid" Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="False"
+                  ItemsSource="{Binding Values}" Background="#10151D" Foreground="#EDF2F7"
+                  BorderBrush="#2B3441" RowBackground="#10151D" AlternatingRowBackground="#1B222D"
+                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#2B3441">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="55" IsReadOnly="True"/>
+                <DataGridTextColumn Header="HEX offset" Binding="{Binding HexOffset}" Width="125" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Raw" Binding="{Binding RawText}" Width="130" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Engineering value" Binding="{Binding EngineeringText, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="3" Margin="0,14,0,0">
+            <TextBlock x:Name="ValidationText" Foreground="#6BA1FF" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Click="CancelButton_Click"/>
+                <Button Content="Save axis" Background="#4C8DFF" BorderBrush="#6BA1FF" Click="SaveButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

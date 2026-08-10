@@ -1,0 +1,73 @@
+<Window x:Class="BinaryHunter.UI.MapDefinitionImportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Import calibration definitions" Icon="Assets/BinaryHunter.ico"
+        Width="1120" Height="700" MinWidth="880" MinHeight="520"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="#0D1117" Foreground="#EDF2F7" FontFamily="{StaticResource UiFont}">
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource FuturisticButton}">
+            <Setter Property="Padding" Value="13,7"/><Setter Property="Margin" Value="4,0"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#161C25"/><Setter Property="Foreground" Value="#EDF2F7"/>
+            <Setter Property="BorderBrush" Value="#3B4655"/><Setter Property="Padding" Value="8,5"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <StackPanel>
+                <TextBlock Text="DAMOS / A2L / DRIVER IMPORT" Foreground="#60A5FA" FontWeight="SemiBold" FontSize="{StaticResource MetadataFontSize}"/>
+                <TextBlock x:Name="SourceText" Foreground="#AAB4C0" FontSize="{StaticResource MetadataFontSize}" Margin="0,5,0,0"/>
+            </StackPanel>
+            <Border HorizontalAlignment="Right" Padding="10,5" Background="#161C25"
+                    BorderBrush="#2B3441" BorderThickness="1" CornerRadius="3">
+                <TextBlock x:Name="CountText" Foreground="#A5B4FC"/>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,14,0,12">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="220"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock Text="ECU address base to subtract" VerticalAlignment="Center" Foreground="#DCE3EB"/>
+            <TextBox x:Name="BaseAddressTextBox" Grid.Column="1" Margin="10,0" TextChanged="BaseAddressTextBox_TextChanged"/>
+            <Button Grid.Column="2" Content="AUTO BASE" Click="AutoBaseButton_Click"/>
+            <TextBlock Grid.Column="3" Text="A2L often stores absolute processor addresses. The adjusted offset must fit the opened file."
+                       Foreground="#71717A" FontSize="{StaticResource MetadataFontSize}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+        </Grid>
+
+        <DataGrid x:Name="MapsGrid" Grid.Row="2" ItemsSource="{Binding Rows}" AutoGenerateColumns="False"
+                  CanUserAddRows="False" IsReadOnly="False" SelectionMode="Extended"
+                  Background="#10151D" Foreground="#EDF2F7" BorderBrush="#2B3441"
+                  RowBackground="#10151D" AlternatingRowBackground="#1B222D" GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="USE" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="52"/>
+                <DataGridTextColumn Header="GROUP" Binding="{Binding Category}" IsReadOnly="True" Width="135"/>
+                <DataGridTextColumn Header="MAP" Binding="{Binding Name}" IsReadOnly="True" Width="220"/>
+                <DataGridTextColumn Header="SOURCE ADDRESS" Binding="{Binding SourceAddress}" IsReadOnly="True" Width="135"/>
+                <DataGridTextColumn Header="FILE OFFSET" Binding="{Binding FileOffset}" IsReadOnly="True" Width="125"/>
+                <DataGridTextColumn Header="SIZE" Binding="{Binding Dimensions}" IsReadOnly="True" Width="85"/>
+                <DataGridTextColumn Header="TYPE" Binding="{Binding TypeLabel}" IsReadOnly="True" Width="130"/>
+                <DataGridTextColumn Header="SCALING" Binding="{Binding Scaling}" IsReadOnly="True" Width="130"/>
+                <DataGridTextColumn Header="UNIT" Binding="{Binding Unit}" IsReadOnly="True" Width="75"/>
+                <DataGridTextColumn Header="STATUS" Binding="{Binding Status}" IsReadOnly="True" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock x:Name="WarningText" Grid.Row="3" Foreground="#FBBF24" FontSize="{StaticResource MetadataFontSize}"
+                   TextWrapping="Wrap" MaxHeight="55" Margin="0,10,0,0"/>
+        <Grid Grid.Row="4" Margin="0,14,0,0">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="SELECT VALID" Click="SelectValidButton_Click"/>
+                <Button Content="CLEAR" Click="ClearButton_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="CANCEL" Click="CancelButton_Click"/>
+                <Button x:Name="ImportButton" Content="IMPORT SELECTED" Click="ImportButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

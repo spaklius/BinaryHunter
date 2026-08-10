@@ -1,0 +1,1252 @@
+<Window x:Class="BinaryHunter.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:BinaryHunter.UI"
+        Title="Binary Hunter" Icon="Assets/BinaryHunter.ico"
+        Width="1200" Height="800" MinWidth="1100" MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        Background="#0D1117" Foreground="#EDF2F7" FontFamily="{StaticResource UiFont}" FontSize="{StaticResource BodyFontSize}"
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType"
+        AllowDrop="True" PreviewDragOver="Window_PreviewDragOver" Drop="Window_Drop">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Page" Color="#0D1117"/>
+        <SolidColorBrush x:Key="Card" Color="#161C25"/>
+        <SolidColorBrush x:Key="Inset" Color="#10151D"/>
+        <SolidColorBrush x:Key="Line" Color="#2B3441"/>
+        <SolidColorBrush x:Key="StrongLine" Color="#3B4655"/>
+        <SolidColorBrush x:Key="Muted" Color="#AAB4C0"/>
+        <SolidColorBrush x:Key="Subtle" Color="#778391"/>
+        <SolidColorBrush x:Key="Accent" Color="#4C8DFF"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <local:SelectedDetectorConverter x:Key="SelectedDetectorConverter"/>
+        <local:WindowHeightToGridHeightConverter x:Key="WindowHeightToGridHeightConverter"/>
+
+        <Style TargetType="Button" BasedOn="{StaticResource FuturisticButton}">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Padding" Value="14,7"/>
+        </Style>
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource FuturisticButton}">
+            <Setter Property="Background" Value="#1B222D"/>
+            <Setter Property="BorderBrush" Value="#3B4655"/>
+            <Setter Property="Foreground" Value="#EDF2F7"/>
+        </Style>
+        <Style x:Key="SmallSecondaryButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="ResultActionButton" TargetType="Button" BasedOn="{StaticResource FuturisticButton}">
+            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="Padding" Value="9,4"/>
+            <Setter Property="FontFamily" Value="{StaticResource BodyFont}"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}"/>
+        </Style>
+
+        <Style x:Key="ResultDirectoryButton" TargetType="Button" BasedOn="{StaticResource ResultActionButton}">
+            <Setter Property="MinWidth" Value="30"/>
+            <Setter Property="Foreground" Value="#FCD34D"/>
+            <Setter Property="Background" Value="#211E16"/>
+            <Setter Property="BorderBrush" Value="#66552D"/>
+        </Style>
+        <Style x:Key="SearchResultActionButton" TargetType="Button" BasedOn="{StaticResource ResultActionButton}">
+            <Setter Property="MinHeight" Value="26"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="FontSize" Value="{StaticResource CaptionFontSize}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="SearchResultFolderButton" TargetType="Button" BasedOn="{StaticResource SearchResultActionButton}">
+            <Setter Property="MinWidth" Value="64"/>
+        </Style>
+
+        <Style x:Key="SearchResultActionCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="HeaderActionButton" TargetType="Button" BasedOn="{StaticResource ResultActionButton}">
+            <Setter Property="MinHeight" Value="24"/>
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="FontSize" Value="{StaticResource CaptionFontSize}"/>
+            <Setter Property="Foreground" Value="#BAE6FD"/>
+            <Setter Property="Background" Value="#172A49"/>
+            <Setter Property="BorderBrush" Value="#315B93"/>
+        </Style>
+
+        <Style x:Key="AnalysisMetricText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}"/>
+            <Setter Property="FontFamily" Value="{StaticResource UiFont}"/>
+            <Setter Property="FontSize" Value="{StaticResource CaptionFontSize}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="AnalysisStateText" TargetType="TextBlock" BasedOn="{StaticResource AnalysisMetricText}">
+            <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+        </Style>
+
+        <Style x:Key="SearchPrimaryButton" TargetType="Button" BasedOn="{StaticResource ResultActionButton}">
+            <Setter Property="MinWidth" Value="108"/>
+            <Setter Property="MinHeight" Value="34"/>
+            <Setter Property="Padding" Value="15,7"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        </Style>
+
+        <Style x:Key="SearchToolButton" TargetType="Button" BasedOn="{StaticResource ResultActionButton}">
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="{StaticResource CaptionFontSize}"/>
+            <Setter Property="Foreground" Value="#D6E4F0"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="SearchRemoveButton" TargetType="Button" BasedOn="{StaticResource ResultActionButton}">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="MinWidth" Value="24"/>
+            <Setter Property="MinHeight" Value="24"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+            <Setter Property="Background" Value="#29191F"/>
+            <Setter Property="BorderBrush" Value="#62343C"/>
+        </Style>
+
+        <Style x:Key="SidebarFileActionButton" TargetType="Button">
+            <Setter Property="MinHeight" Value="38"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Frame" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Frame" Property="Background" Value="{StaticResource SurfaceHoverBrush}"/>
+                                <Setter TargetName="Frame" Property="BorderBrush" Value="{StaticResource AccentHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Frame" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Frame" Property="Background" Value="{StaticResource SurfacePressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Frame" Property="Opacity" Value="0.58"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DetectorAutoOption" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource AccentSurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SurfaceHoverBrush}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentHoverBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DetectorGroupToggle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontFamily" Value="{StaticResource BodyFont}"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="MinHeight" Value="34"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Frame" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <Border x:Name="Signal" Background="Transparent"/>
+                                <ContentPresenter Grid.Column="1" Margin="9,0"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"/>
+                                <Path x:Name="Arrow" Grid.Column="2" Data="M 1 3 L 5 7 L 9 3"
+                                      Stroke="{StaticResource SecondaryTextBrush}" StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Frame" Property="Background" Value="{StaticResource SurfaceHoverBrush}"/>
+                                <Setter TargetName="Signal" Property="Background" Value="{StaticResource AccentHoverBrush}"/>
+                                <Setter TargetName="Arrow" Property="Stroke" Value="{StaticResource PrimaryTextBrush}"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Frame" Property="Background" Value="{StaticResource AccentSurfaceBrush}"/>
+                                <Setter TargetName="Signal" Property="Background" Value="{StaticResource AccentBrush}"/>
+                                <Setter TargetName="Arrow" Property="Stroke" Value="{StaticResource AccentHoverBrush}"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Signal" Property="Background" Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Frame" Property="Opacity" Value="0.45"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DetectorOptionButton" TargetType="Button" BasedOn="{StaticResource ResultActionButton}">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="Padding" Value="27,6"/>
+            <Setter Property="FontSize" Value="{StaticResource CaptionFontSize}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{StaticResource WorkspaceBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        <Style x:Key="NavToggle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#AAB4C0"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="MinHeight" Value="42"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Frame" Background="{TemplateBinding Background}"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border x:Name="ActiveBar" Width="3" Background="#4C8DFF"
+                                        CornerRadius="2" HorizontalAlignment="Left" Visibility="Collapsed"/>
+                                <ContentPresenter Grid.Column="1" Margin="10,0,0,0"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Frame" Property="Background" Value="#222B37"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Frame" Property="Background" Value="#172A49"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter TargetName="ActiveBar" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DetectorSelectorToggle" TargetType="ToggleButton">
+            <Setter Property="MinHeight" Value="34"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="7,4"/>
+            <Setter Property="FontFamily" Value="{StaticResource UiFont}"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Frame" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="14"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Data="M 3 3 L 13 3 M 3 7 L 16 7 M 3 11 L 10 11"
+                                      Stroke="{StaticResource AccentHoverBrush}" StrokeThickness="1.4"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      Stretch="Uniform" Width="13" Height="13"/>
+                                <TextBlock x:Name="SelectedText" Grid.Column="1"
+                                           Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                           Margin="6,0,4,0" VerticalAlignment="Center"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <Path x:Name="Arrow" Grid.Column="2" Data="M 1 3 L 5 7 L 9 3"
+                                      Stroke="{StaticResource SecondaryTextBrush}" StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Frame" Property="Background" Value="{StaticResource SurfaceHoverBrush}"/>
+                                <Setter TargetName="Frame" Property="BorderBrush" Value="{StaticResource AccentHoverBrush}"/>
+                                <Setter TargetName="Arrow" Property="Stroke" Value="{StaticResource PrimaryTextBrush}"/>
+                                <Setter TargetName="SelectedText" Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Frame" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                <Setter TargetName="Frame" Property="Background" Value="{StaticResource AccentSurfaceBrush}"/>
+                                <Setter TargetName="Arrow" Property="Data" Value="M 1 7 L 5 3 L 9 7"/>
+                                <Setter TargetName="Arrow" Property="Stroke" Value="{StaticResource AccentHoverBrush}"/>
+                                <Setter TargetName="SelectedText" Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Frame" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                <Setter TargetName="SelectedText" Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Frame" Property="Opacity" Value="0.60"/>
+                                <Setter TargetName="SelectedText" Property="Foreground" Value="{StaticResource SecondaryTextBrush}"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource Inset}"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="{StaticResource StrongLine}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CaretBrush" Value="#FFFFFF"/>
+            <Setter Property="SelectionBrush" Value="{StaticResource Accent}"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="ComboBox" BasedOn="{StaticResource FuturisticComboBox}">
+            <Setter Property="Background" Value="{StaticResource Inset}"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="{StaticResource StrongLine}"/>
+            <Setter Property="Padding" Value="9,7"/>
+        </Style>
+        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource FuturisticComboBoxItem}"/>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#DCE3EB"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="{StaticResource WorkspaceBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowBackground" Value="{StaticResource WorkspaceBackgroundBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="RowHeight" Value="32"/>
+            <Setter Property="ColumnHeaderHeight" Value="32"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+            <Setter Property="EnableRowVirtualization" Value="True"/>
+            <Setter Property="EnableColumnVirtualization" Value="True"/>
+            <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource Inset}"/>
+            <Setter Property="Foreground" Value="#AAB4C0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="FontFamily" Value="{StaticResource BodyFont}"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,6"/>
+        </Style>
+        <Style TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="#EDF2F7"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="FontFamily" Value="{StaticResource BodyFont}"/>
+            <Setter Property="FontSize" Value="{StaticResource MetadataFontSize}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentSurfaceBrush}"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SummaryCard" TargetType="Border">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid x:Name="ApplicationShell" Background="{StaticResource Page}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="NavigationColumn" Width="208"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="GlobalCommandRow" Height="48"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="3"/>
+        </Grid.RowDefinitions>
+
+        <!-- Persistent application navigation -->
+        <Border x:Name="NavigationSidebar" Grid.RowSpan="4" Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
+            <Grid Margin="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Margin="4,4,4,0">
+                    <Border Width="36" Height="36" Background="{StaticResource ApplicationBackgroundBrush}"
+                            BorderBrush="{StaticResource StrongLine}" BorderThickness="1" CornerRadius="4">
+                        <Image Source="Assets/BinaryHunter.Icon.png" Width="34" Height="34" Stretch="Uniform"/>
+                    </Border>
+                    <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="BinaryHunter" FontSize="{StaticResource SectionFontSize}" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock Grid.Row="1" Style="{StaticResource TechnicalLabelTextStyle}"
+                           VerticalAlignment="Bottom" Margin="4,0,0,4"/>
+                <StackPanel Grid.Row="2">
+                    <ToggleButton x:Name="IdentifyNavigationToggle" Style="{StaticResource NavToggle}"
+                                  IsChecked="True" Click="IdentifyNavigationToggle_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="ID" Foreground="{StaticResource AccentHoverBrush}" Width="28"/>
+                            <TextBlock Text="ECU Identifier"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="SearchNavigationToggle" Style="{StaticResource NavToggle}"
+                                  Margin="0,4,0,0" Click="SearchNavigationToggle_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⌕" Foreground="{StaticResource AccentHoverBrush}" Width="28"/>
+                            <TextBlock Text="Binary Search"/>
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+                <StackPanel x:Name="IdentifierSidebarTools" Grid.Row="3" Margin="4,18,4,0"
+                            VerticalAlignment="Top">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=IdentifyNavigationToggle}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <Border BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0"
+                            Padding="0,14,0,0">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource TechnicalLabelTextStyle}"/>
+                            <Border Margin="0,8,0,0"
+                                    Background="{StaticResource ApplicationBackgroundBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="4">
+                                <Grid>
+                                    <Border x:Name="DropZone">
+                                        <Button Click="IdentifyButton_Click" Style="{StaticResource SidebarFileActionButton}"
+                                                ToolTip="Open BIN, HEX, ORI, FRF or ODX ECU file">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="18"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="14"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Data="M 2 5 L 7 5 L 9 7 L 18 7 L 18 16 L 2 16 Z"
+                                                      Stroke="{StaticResource AccentHoverBrush}" StrokeThickness="1.45"
+                                                      StrokeLineJoin="Round" Stretch="Uniform" Width="14" Height="14"/>
+                                                <TextBlock Grid.Column="1" Text="Open ECU file" Margin="7,0,4,0"
+                                                           FontWeight="SemiBold" VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <Path Grid.Column="2" Data="M 2 1 L 6 5 L 2 9"
+                                                      Stroke="{StaticResource SecondaryTextBrush}" StrokeThickness="1.4"
+                                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Button>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Row="4">
+                    <Button Style="{StaticResource SecondaryButton}" HorizontalContentAlignment="Left"
+                            Click="SupportedEcusButton_Click" ToolTip="View supported ECU families and manufacturers">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="≡" Foreground="{StaticResource AccentHoverBrush}" Width="28"/>
+                            <TextBlock Text="Supported ECUs"/>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Version 1.0.0" Style="{StaticResource StatusTextStyle}" Margin="4,10,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Global command bar -->
+        <Border x:Name="GlobalCommandBar" Grid.Column="1" Background="{StaticResource SurfaceRaisedBrush}"
+                BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+            <Grid Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="380"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="PROFILE" Style="{StaticResource TechnicalLabelTextStyle}"
+                           VerticalAlignment="Center"/>
+                <Grid Grid.Column="2" VerticalAlignment="Center">
+                    <ToggleButton x:Name="DetectorToggle" Style="{StaticResource DetectorSelectorToggle}"
+                                  HorizontalContentAlignment="Left" Content="Auto — all detectors"
+                                  ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}"/>
+                    <Popup IsOpen="{Binding IsChecked, ElementName=DetectorToggle, Mode=TwoWay}"
+                           PlacementTarget="{Binding ElementName=DetectorToggle}" Placement="Bottom"
+                           VerticalOffset="6" StaysOpen="False" AllowsTransparency="True"
+                           PopupAnimation="Fade">
+                        <Border Width="480" MaxHeight="520"
+                                Background="{StaticResource WorkspaceBackgroundBrush}"
+                                BorderBrush="{StaticResource BorderStrongBrush}"
+                                BorderThickness="1" CornerRadius="4">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Border Padding="12,10" Background="{StaticResource SurfaceRaisedBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1"
+                                        CornerRadius="4,4,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Detector profiles" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Use automatic detection or select one profile"
+                                                   Style="{StaticResource StatusTextStyle}" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel>
+                                        <Border Style="{StaticResource DetectorAutoOption}"
+                                                MouseLeftButtonDown="AutoOption_Click">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Background="{StaticResource AccentBrush}" Margin="-12,-9,0,-9"/>
+                                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                                    <TextBlock Text="Automatic detection" Foreground="{StaticResource PrimaryTextBrush}"
+                                                               FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="Run all compatible detector profiles"
+                                                               Style="{StaticResource StatusTextStyle}" Margin="0,1,0,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="2" Background="{StaticResource SurfaceRaisedBrush}"
+                                                        BorderBrush="{StaticResource BorderStrongBrush}" BorderThickness="1"
+                                                        CornerRadius="3" Padding="6,2" VerticalAlignment="Center">
+                                                    <TextBlock Text="DEFAULT" Foreground="{StaticResource AccentHoverBrush}"
+                                                               FontSize="{StaticResource CaptionFontSize}" FontWeight="SemiBold"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                        <ItemsControl x:Name="DetectorGroupsControl">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <ToggleButton x:Name="GroupToggle" Style="{StaticResource DetectorGroupToggle}"
+                                                                      HorizontalContentAlignment="Stretch">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Text="{Binding ManufacturerName}" FontWeight="SemiBold"
+                                                                           TextTrimming="CharacterEllipsis"/>
+                                                                <TextBlock Grid.Column="1" Text="{Binding Detectors.Count}"
+                                                                           Foreground="{StaticResource SecondaryTextBrush}"
+                                                                           FontSize="{StaticResource CaptionFontSize}" Margin="8,0,0,0"/>
+                                                            </Grid>
+                                                        </ToggleButton>
+                                                        <ItemsControl ItemsSource="{Binding Detectors}"
+                                                                      Visibility="{Binding IsChecked, ElementName=GroupToggle, Converter={StaticResource BoolToVis}}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Button Click="DetectorItem_Click"
+                                                                            Style="{StaticResource DetectorOptionButton}">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="12"/>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <Ellipse Width="4" Height="4" Fill="{StaticResource AccentHoverBrush}"
+                                                                                     HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                                            <TextBlock Grid.Column="1" Text="{Binding Name}"
+                                                                                       TextTrimming="CharacterEllipsis"/>
+                                                                        </Grid>
+                                                                    </Button>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Main workspace -->
+        <Grid Grid.Column="1" Grid.Row="1" x:Name="WorkspaceContent" Margin="16"
+              HorizontalAlignment="Stretch">
+            <Grid x:Name="IdentifyWorkspacePanel">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="92"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                    <Border x:Name="AnalyzingPanel" Grid.Row="0" Panel.ZIndex="2"
+                            Visibility="Collapsed" Background="#161C25"
+                            BorderBrush="#2B3441" BorderThickness="1" CornerRadius="6"
+                            Padding="14">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <ProgressBar Width="44" Height="5" IsIndeterminate="True" Foreground="#4C8DFF"/>
+                            <TextBlock Text="Scanning binary structures, checksums, and ECU identifiers..."
+                                       Foreground="#DCE3EB" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- File and identification context -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="ReadFormatCard" Style="{StaticResource SummaryCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Border x:Name="ReadFormatBadge" Width="36" Height="36" CornerRadius="4" Background="#222B37">
+                                    <TextBlock x:Name="ReadFormatBadgeText" Text="..." FontFamily="{StaticResource UiFont}"
+                                               FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="READ FORMAT" Foreground="#AAB4C0" FontSize="{StaticResource CaptionFontSize}" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="ReadFormatValueText" Text="No File Loaded" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                    <TextBlock x:Name="ReadFormatDetailText" Text="Select file to analyze"
+                                               Foreground="#AAB4C0" FontFamily="{StaticResource UiFont}" FontSize="{StaticResource CaptionFontSize}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border x:Name="DetectedBrandCard" Grid.Column="1" Style="{StaticResource SummaryCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Border x:Name="DetectedBrandBackgroundLayer"
+                                        Grid.ColumnSpan="2"
+                                        Margin="-10,-6"
+                                        CornerRadius="0"
+                                        Opacity="0.20"
+                                        IsHitTestVisible="False"
+                                        ClipToBounds="True"
+                                        Visibility="Collapsed">
+                                    <Border.Background>
+                                        <ImageBrush x:Name="DetectedBrandBackgroundBrush"
+                                                    Stretch="Uniform"
+                                                    AlignmentX="Right"
+                                                    AlignmentY="Center"/>
+                                    </Border.Background>
+                                </Border>
+                                <Border x:Name="DetectedBrandBadge" Width="36" Height="36" CornerRadius="4" Background="#222B37">
+                                    <Grid>
+                                        <Image x:Name="DetectedBrandBadgeImage"
+                                               Width="36" Height="36"
+                                               Stretch="UniformToFill"
+                                               Visibility="Collapsed">
+                                            <Image.Clip>
+                                                <RectangleGeometry Rect="0,0,36,36" RadiusX="4" RadiusY="4"/>
+                                            </Image.Clip>
+                                        </Image>
+                                        <TextBlock x:Name="DetectedBrandBadgeText" Text="--" FontFamily="{StaticResource UiFont}"
+                                                   FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold" HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="VEHICLE / ECU BRAND" Foreground="#AAB4C0" FontSize="{StaticResource CaptionFontSize}" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="DetectedBrandValueText" Text="Vehicle Brand" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                    <TextBlock x:Name="DetectedBrandDetailText" Text="Not detected"
+                                               Foreground="#AAB4C0" FontFamily="{StaticResource UiFont}" FontSize="{StaticResource CaptionFontSize}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border x:Name="EcuProfileCard" Grid.Column="2" Style="{StaticResource SummaryCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Border x:Name="EcuProfileBadge" Width="36" Height="36" CornerRadius="4"
+                                        Background="#172A49" BorderBrush="#254E91" BorderThickness="1">
+                                    <TextBlock x:Name="EcuProfileBadgeText" Text="ECU" Foreground="#4C8DFF"
+                                               FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="ECU PROFILE" Foreground="#AAB4C0" FontSize="{StaticResource CaptionFontSize}" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="EcuProfileValueText" Text="ECU Profile" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                    <TextBlock x:Name="EcuProfileDetailText" Text="0 identifiers found"
+                                               Foreground="#AAB4C0" FontFamily="{StaticResource UiFont}" FontSize="{StaticResource CaptionFontSize}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Identified data grid -->
+                    <Border Grid.Row="2" Background="#161C25" BorderBrush="#2B3441" BorderThickness="1"
+                            CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="#10151D" BorderBrush="#2B3441" BorderThickness="0,0,0,1"
+                                    CornerRadius="4,4,0,0" Padding="16,9">
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock x:Name="IdentificationTitleText" Text="No file selected"
+                                                   FontFamily="{StaticResource UiFont}" FontSize="{StaticResource MetadataFontSize}"
+                                                   FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="IdentificationSummaryText"
+                                                   Text="Drop a file to identify its ECU profile and embedded IDs."
+                                                   Foreground="#AAB4C0" FontFamily="{StaticResource UiFont}"
+                                                   FontSize="{StaticResource CaptionFontSize}" Margin="0,3,0,0"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                                                Margin="16,0,0,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Text, ElementName=IdentificationStatusText}" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                            <Path Data="M 2 6 L 5 9 L 11 3"
+                                                  Stroke="{StaticResource SuccessBrush}" StrokeThickness="1.6"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                  Stretch="Uniform" Width="12" Height="12"/>
+                                            <TextBlock x:Name="IdentificationStatusText"
+                                                       Style="{StaticResource AnalysisStateText}"
+                                                       Margin="5,0,0,0"/>
+                                            <Border Width="1" Height="16" Background="{StaticResource BorderBrush}"
+                                                    Margin="10,0"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Path Data="M 2 3 L 12 3 M 2 7 L 12 7 M 2 11 L 9 11"
+                                                  Stroke="{StaticResource SecondaryTextBrush}" StrokeThickness="1.35"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                  Stretch="Uniform" Width="12" Height="12"/>
+                                            <TextBlock x:Name="IdentifierCountBadgeText"
+                                                       Text="0 identifiers found"
+                                                       Style="{StaticResource AnalysisMetricText}"
+                                                       Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                        <Button x:Name="CopyDataButton" Content="COPY DATA"
+                                                Style="{StaticResource HeaderActionButton}" Margin="12,0,0,0"
+                                                Click="CopyDataButton_Click"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Grid.Row="1" BorderBrush="#2B3441" BorderThickness="0,0,0,1" Padding="16,7">
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <Grid>
+                                        <TextBox x:Name="IdentificationFilterTextBox" Height="32" FontFamily="{StaticResource UiFont}"
+                                             FontSize="{StaticResource MetadataFontSize}" TextChanged="IdentificationFilterTextBox_TextChanged"
+                                             ToolTip="Filter identifiers (e.g. EDC17, Software, 0x100)..."/>
+                                        <TextBlock Text="Filter identifiers (e.g. EDC17, Software, 0x100)..."
+                                                   Foreground="#778391" FontFamily="{StaticResource UiFont}" FontSize="{StaticResource MetadataFontSize}"
+                                                   Margin="12,0" VerticalAlignment="Center" IsHitTestVisible="False">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Text, ElementName=IdentificationFilterTextBox}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                    <TextBlock Grid.Column="2" x:Name="IdentificationRowsText"
+                                               Text="Showing 0 of 0 rows" Foreground="#AAB4C0"
+                                               FontSize="{StaticResource MetadataFontSize}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <DataGrid x:Name="IdentificationGrid" Grid.Row="2"
+                                      AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                                      ClipboardCopyMode="IncludeHeader" RowHeight="36">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="IDENTIFIER TYPE" Binding="{Binding Type}" Width="210"/>
+                                    <DataGridTextColumn Header="VALUE" Binding="{Binding Value}" Width="*"/>
+                                    <DataGridTextColumn Header="HEX OFFSET" Binding="{Binding HexOffset}" Width="135"/>
+                                    <DataGridTextColumn Header="DECIMAL OFFSET" Binding="{Binding Offset, StringFormat=N0}" Width="135"/>
+                                    <DataGridTemplateColumn Header="ACTIONS" Width="92"
+                                                            CellStyle="{StaticResource SearchResultActionCell}">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center">
+                                                    <Button Style="{StaticResource SearchResultActionButton}"
+                                                            ToolTip="Copy this identifier value"
+                                                            Click="CopyIdentifierButton_Click">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Path Data="M 5 2 L 14 2 L 14 11 M 2 5 L 11 5 L 11 14 L 2 14 Z"
+                                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                                  StrokeThickness="1.25" StrokeLineJoin="Round"
+                                                                  Stretch="Uniform" Width="12" Height="12"/>
+                                                            <TextBlock Text="COPY" Margin="5,0,0,0"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+            </Grid>
+
+            <!-- Binary Search workspace: matches BinarySearchWorkspace.tsx -->
+            <Grid x:Name="SearchWorkspacePanel" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="310"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="#161C25" BorderBrush="#2B3441" BorderThickness="1"
+                            CornerRadius="6" Padding="14">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Search definition" FontSize="{StaticResource SectionFontSize}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Pattern, encoding and limits" Style="{StaticResource MetadataTextStyle}" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Button x:Name="SearchButton" Grid.Column="1" IsEnabled="False"
+                                        Style="{StaticResource SearchPrimaryButton}"
+                                        Click="RunLoadedFilesSearchButton_Click" IsDefault="True">
+                                    <TextBlock x:Name="SearchButtonText" Text="RUN SEARCH"
+                                               FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold"/>
+                                </Button>
+                            </Grid>
+                            <Border BorderBrush="#2B3441" BorderThickness="0,1,0,0" Padding="0,15,0,0">
+                                <Grid>
+                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="8"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Search Value / Pattern" Foreground="#DCE3EB" FontSize="{StaticResource MetadataFontSize}"
+                                                   FontWeight="SemiBold" Margin="1,0,0,5"/>
+                                        <TextBox x:Name="SearchTextBox" Height="39" FontFamily="{StaticResource UiFont}"
+                                                 TextChanged="SearchTextBox_TextChanged"
+                                                 ToolTip="e.g. 028101, 103738, EDC17C64, 04L906026BK, WAUZZZ..."/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2">
+                                        <TextBlock Text="Search Type" Foreground="#DCE3EB" FontSize="{StaticResource MetadataFontSize}"
+                                                   FontWeight="SemiBold" Margin="1,0,0,5"/>
+                                        <ComboBox x:Name="SearchTypeComboBox" Height="39" Margin="0,0,3,0" SelectedIndex="0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#2B3441" BorderThickness="0,1,0,0" Padding="0,12,0,0" Margin="0,14,0,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="10"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <CheckBox x:Name="FirstMatchCheckBox"
+                                              Content="Stop after first match per file"
+                                              HorizontalAlignment="Left"/>
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Result limit" Foreground="#AAB4C0"
+                                                   FontFamily="{StaticResource UiFont}"
+                                                   FontSize="{StaticResource MetadataFontSize}"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBox x:Name="MaxResultsTextBox" Grid.Column="1"
+                                                 Text="1000" Width="80" Height="30"
+                                                 FontFamily="{StaticResource UiFont}"
+                                                 FontSize="{StaticResource MetadataFontSize}"
+                                                 TextAlignment="Center"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Target file manager -->
+                    <Border Grid.Row="0" Grid.Column="2" Background="#161C25" BorderBrush="#2B3441" BorderThickness="1"
+                            CornerRadius="6" Padding="12">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="LoadedFilesCountText" Text="Target Binary Files (0)"
+                                           FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <UniformGrid Grid.Row="2" Columns="2">
+                                    <Button Style="{StaticResource SearchToolButton}" Margin="0,0,4,0"
+                                            Click="SearchFolderButton_Click" ToolTip="Add every supported binary from a folder">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Path Data="M 2 5 L 7 5 L 9 7 L 18 7 L 18 16 L 2 16 Z"
+                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                  StrokeThickness="1.4" StrokeLineJoin="Round"
+                                                  Stretch="Uniform" Width="13" Height="13"/>
+                                            <TextBlock Text="SEARCH FOLDER" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource SearchToolButton}" Margin="4,0,0,0"
+                                            Click="AddFilesButton_Click" ToolTip="Add one or more binary files">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Path Data="M 3 2 L 11 2 L 15 6 L 15 17 L 3 17 Z M 11 2 L 11 6 L 15 6 M 9 9 L 9 15 M 6 12 L 12 12"
+                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                  StrokeThickness="1.35" StrokeLineJoin="Round"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                  Stretch="Uniform" Width="13" Height="13"/>
+                                            <TextBlock Text="ADD FILES" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </Button>
+                                </UniformGrid>
+                            </Grid>
+                            <Border BorderBrush="#2B3441" BorderThickness="0,1,0,0" Padding="0,12,0,0">
+                                <Grid>
+                                    <Border x:Name="EmptyLoadedFilesPanel" BorderBrush="#2B3441"
+                                            BorderThickness="1" CornerRadius="4" Padding="16">
+                                        <TextBlock Text="Choose &quot;Search Folder&quot; or &quot;Add Files&quot; to select binary sources."
+                                                   Foreground="#778391" FontSize="{StaticResource MetadataFontSize}" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <DockPanel LastChildFill="True">
+                                    <Border x:Name="FolderSourcePanel" MinHeight="58"
+                                                VerticalAlignment="Top" Visibility="Collapsed"
+                                                DockPanel.Dock="Left" Background="#15120F" BorderBrush="#6B4F26"
+                                                BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,9,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <TextBlock Text="DIR" Foreground="#FBBF24" FontFamily="{StaticResource UiFont}"
+                                                           FontSize="{StaticResource CaptionFontSize}" FontWeight="SemiBold" VerticalAlignment="Center"
+                                                           Margin="0,0,10,0"/>
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock x:Name="FolderSourceNameText" Foreground="#EDF2F7"
+                                                               FontFamily="{StaticResource UiFont}" FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold"/>
+                                                    <TextBlock x:Name="FolderSourcePathText" Foreground="#8A8A8A"
+                                                               FontFamily="{StaticResource UiFont}" FontSize="{StaticResource CaptionFontSize}"
+                                                               TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="2" Content="&#x00D7;" Style="{StaticResource SearchRemoveButton}"
+                                                        ToolTip="Remove folder"
+                                                        Click="RemoveSearchFolderButton_Click"/>
+                                            </Grid>
+                                        </Border>
+                                        <ItemsControl x:Name="LoadedFilesControl">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate><StackPanel/></ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border MinHeight="58" VerticalAlignment="Top"
+                                                            Background="#10151D" BorderBrush="#3A3A3F"
+                                                            BorderThickness="1" CornerRadius="4" Padding="10"
+                                                            Margin="0,0,9,0">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding Name}" Foreground="#EDF2F7"
+                                                                           FontFamily="{StaticResource UiFont}" FontSize="{StaticResource MetadataFontSize}"
+                                                                           FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                                <TextBlock Text="{Binding SizeSummary}" Foreground="#778391"
+                                                                           FontFamily="{StaticResource UiFont}" FontSize="{StaticResource CaptionFontSize}" Margin="0,3,0,0"/>
+                                                            </StackPanel>
+                                                            <Button Grid.Column="1" Content="&#x00D7;" Style="{StaticResource SearchRemoveButton}"
+                                                                    ToolTip="Remove file"
+                                                                    Click="RemoveLoadedFileButton_Click"/>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </DockPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                            Background="{StaticResource WorkspaceBackgroundBrush}"
+                            BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="4">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="360">
+                            <TextBlock Text="Search results" FontSize="{StaticResource SectionFontSize}"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Add files or a folder, enter a pattern, then run the search. Matches will appear in this table."
+                                       Style="{StaticResource SecondaryTextStyle}" TextAlignment="Center"
+                                       TextWrapping="Wrap" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Results -->
+                    <Border x:Name="SearchResultsCard" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                            Panel.ZIndex="1" Visibility="Collapsed" Background="#161C25"
+                            BorderBrush="#3B4655" BorderThickness="1.5" CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <Border Background="#10151D" BorderBrush="#3B4655" BorderThickness="0,0,0,1"
+                                    CornerRadius="4,4,0,0" Padding="18,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" MinWidth="0">
+                                        <TextBlock Text="⚡" Foreground="#34D399" Margin="0,0,7,0"/>
+                                        <TextBlock x:Name="ResultsHeaderText" Text="Found 0 Matches in 0 File(s)"
+                                                   FontFamily="{StaticResource UiFont}" FontSize="{StaticResource MetadataFontSize}"
+                                                   FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="#222B37" CornerRadius="3" Padding="8,4"
+                                            Margin="12,0,0,0" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ResultsQueryText" Text="Query: &quot;&quot; [Auto]"
+                                                   Foreground="#DCE3EB" FontFamily="{StaticResource UiFont}"
+                                                   FontSize="{StaticResource CaptionFontSize}"
+                                                   MaxWidth="320" TextTrimming="CharacterEllipsis"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <DataGrid x:Name="FilesGrid" Grid.Row="1"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True" CanUserAddRows="False" ClipboardCopyMode="IncludeHeader"
+                                      RowHeight="36"
+                                      ClipToBounds="True"
+                                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                <DataGrid.Resources>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="BorderBrush" Value="#2B2B30"/>
+                                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#29292F"/>
+                                                <Setter Property="BorderBrush" Value="#5A5A65"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource AccentSurfaceBrush}"/>
+                                                <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <Style TargetType="ScrollBar">
+                                        <Setter Property="Width" Value="15"/>
+                                        <Setter Property="Background" Value="#0D1117"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ScrollBar">
+                                                    <Border Background="#0D1117" BorderBrush="#3B4655"
+                                                            BorderThickness="1,0,0,0" Padding="3,4">
+                                                        <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                                            <Track.DecreaseRepeatButton>
+                                                                <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}"
+                                                                              Background="Transparent" BorderThickness="0"
+                                                                              Opacity="0"/>
+                                                            </Track.DecreaseRepeatButton>
+                                                            <Track.Thumb>
+                                                                <Thumb MinHeight="36">
+                                                                    <Thumb.Template>
+                                                                        <ControlTemplate TargetType="Thumb">
+                                                                            <Border x:Name="ThumbFrame" Background="#6B6B76"
+                                                                                    BorderBrush="#92929F" BorderThickness="1"
+                                                                                    CornerRadius="5"/>
+                                                                            <ControlTemplate.Triggers>
+                                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                                    <Setter TargetName="ThumbFrame"
+                                                                                            Property="Background" Value="#AAB4C0"/>
+                                                                                    <Setter TargetName="ThumbFrame"
+                                                                                            Property="BorderBrush" Value="#DCE3EB"/>
+                                                                                </Trigger>
+                                                                            </ControlTemplate.Triggers>
+                                                                        </ControlTemplate>
+                                                                    </Thumb.Template>
+                                                                </Thumb>
+                                                            </Track.Thumb>
+                                                            <Track.IncreaseRepeatButton>
+                                                                <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}"
+                                                                              Background="Transparent" BorderThickness="0"
+                                                                              Opacity="0"/>
+                                                            </Track.IncreaseRepeatButton>
+                                                        </Track>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="FILE NAME" Binding="{Binding FileName}"
+                                                        Width="1.25*" MinWidth="150"/>
+                                    <DataGridTextColumn Header="MATCH TYPE" Binding="{Binding MatchType}" Width="105"/>
+                                    <DataGridTextColumn Header="HEX OFFSET" Binding="{Binding HexOffset}" Width="112"/>
+                                    <DataGridTextColumn Header="DECIMAL" Binding="{Binding Offset, StringFormat=N0}" Width="92"/>
+                                    <DataGridTextColumn Header="HEX CONTEXT SNIPPET" Binding="{Binding ContextHex}"
+                                                        Width="1.75*" MinWidth="170">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                <Setter Property="TextWrapping" Value="NoWrap"/>
+                                                <Setter Property="ToolTip" Value="{Binding ContextHex}"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTemplateColumn Header="ACTIONS" Width="92"
+                                                            CellStyle="{StaticResource SearchResultActionCell}">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center">
+                                                    <Button Style="{StaticResource SearchResultFolderButton}"
+                                                            ToolTip="Open the containing folder and select this file"
+                                                            Click="OpenResultFolderButton_Click">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Path Data="M 2 5 L 7 5 L 9 7 L 16 7 L 16 15 L 2 15 Z"
+                                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                                  StrokeThickness="1.3" StrokeLineJoin="Round"
+                                                                  Stretch="Uniform" Width="12" Height="12"/>
+                                                            <TextBlock Text="FOLDER" Margin="5,0,0,0"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+            </Grid>
+
+        </Grid>
+
+        <!-- Footer -->
+        <Border x:Name="ApplicationFooter" Grid.Column="1" Grid.Row="2" Background="#161C25" BorderBrush="#2B3441" BorderThickness="0,1,0,0" Padding="16,0">
+            <Grid x:Name="FooterContentGrid" MaxWidth="1280" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <Ellipse Width="7" Height="7" Fill="#34D399" VerticalAlignment="Center"/>
+                <TextBlock x:Name="StatusText" Grid.Column="1" Text="Ready"
+                           Foreground="#778391" FontFamily="{StaticResource UiFont}" FontSize="{StaticResource MetadataFontSize}"
+                           VerticalAlignment="Center" Margin="9,0,12,0" TextTrimming="CharacterEllipsis"/>
+                <TextBlock x:Name="FooterLoadedFilesCountText" Grid.Column="2" Text="0 File(s) in Memory"
+                           Foreground="#778391" FontFamily="{StaticResource UiFont}" FontSize="{StaticResource MetadataFontSize}"
+                           VerticalAlignment="Center" Margin="12,0,0,0"/>
+            </Grid>
+        </Border>
+        <ProgressBar x:Name="SearchProgressBar" Grid.Column="1" Grid.Row="3" IsIndeterminate="True"
+                     Visibility="Collapsed" Foreground="#4C8DFF" Background="#1A1A1A"/>
+
+        <!-- Compatibility controls retained for the legacy folder-search implementation. -->
+        <Grid Visibility="Collapsed">
+            <TextBlock x:Name="SupportedProfileCountText"/>
+            <ItemsControl x:Name="SupportedEcuProfilesList"/>
+            <TextBox x:Name="FolderTextBox"/>
+            <CheckBox x:Name="SubfoldersCheckBox" IsChecked="True"/>
+            <CheckBox x:Name="SkipBuildFoldersCheckBox" IsChecked="True"/>
+            <CheckBox x:Name="UseCacheCheckBox" IsChecked="True"/>
+        </Grid>
+    </Grid>
+</Window>

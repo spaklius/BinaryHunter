@@ -1,0 +1,75 @@
+<Window x:Class="BinaryHunter.UI.AutomaticMapDiscoveryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Automatic map discovery" Icon="Assets/BinaryHunter.ico"
+        Width="1080" Height="680" MinWidth="850" MinHeight="520"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="#0D1117" Foreground="#EDF2F7" FontFamily="{StaticResource UiFont}">
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource FuturisticButton}">
+            <Setter Property="Padding" Value="13,7"/><Setter Property="Margin" Value="4,0"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/><RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <StackPanel>
+                <TextBlock Text="AUTOMATIC MAP / AXIS DISCOVERY" Foreground="#60A5FA"
+                           FontWeight="SemiBold" FontSize="{StaticResource MetadataFontSize}"/>
+                <TextBlock Text="Heuristic candidates are suggestions. Load a matching XDF/A2L for address-accurate maps, axes and scaling."
+                           Foreground="#778391" FontSize="{StaticResource MetadataFontSize}" Margin="0,5,0,0"/>
+            </StackPanel>
+            <Border HorizontalAlignment="Right" Padding="10,5" Background="#161C25"
+                    BorderBrush="#2B3441" BorderThickness="1" CornerRadius="3">
+                <TextBlock x:Name="CountText" Text="0 candidates" Foreground="#A5B4FC"/>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,15,0,10">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel>
+                <ProgressBar x:Name="ScanProgress" Height="5" Minimum="0" Maximum="100"
+                             Foreground="#4C8DFF" Background="#1B222D"/>
+                <TextBlock x:Name="StatusText" Text="Preparing scan..." Foreground="#AAB4C0"
+                           FontSize="{StaticResource MetadataFontSize}" Margin="0,6,0,0"/>
+            </StackPanel>
+            <Button x:Name="CancelScanButton" Grid.Column="1" Content="CANCEL SCAN"
+                    Margin="12,0,0,0" Click="CancelScanButton_Click"/>
+        </Grid>
+
+        <DataGrid x:Name="CandidatesGrid" Grid.Row="2" ItemsSource="{Binding Rows}"
+                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
+                  SelectionMode="Extended" Background="#10151D" Foreground="#EDF2F7"
+                  BorderBrush="#2B3441" RowBackground="#10151D" AlternatingRowBackground="#1B222D"
+                  GridLinesVisibility="Horizontal" HeadersVisibility="Column">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="USE" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="52"/>
+                <DataGridTextColumn Header="CATEGORY" Binding="{Binding Category}" IsReadOnly="True" Width="170"/>
+                <DataGridTextColumn Header="CONFIDENCE" Binding="{Binding ConfidenceText}" IsReadOnly="True" Width="105"/>
+                <DataGridTextColumn Header="HEX OFFSET" Binding="{Binding HexOffset}" IsReadOnly="True" Width="125"/>
+                <DataGridTextColumn Header="SIZE" Binding="{Binding Dimensions}" IsReadOnly="True" Width="85"/>
+                <DataGridTextColumn Header="FORMAT" Binding="{Binding Format}" IsReadOnly="True" Width="125"/>
+                <DataGridTextColumn Header="AXES" Binding="{Binding Axes}" IsReadOnly="True" Width="150"/>
+                <DataGridTextColumn Header="EVIDENCE" Binding="{Binding Evidence}" IsReadOnly="True" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="3" Margin="0,14,0,0">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="LOAD XDF / A2L" Click="LoadDefinitionsButton_Click"/>
+                <Button Content="SELECT STRONG" Click="SelectStrongButton_Click"/>
+                <Button Content="SELECT ALL" Click="SelectAllButton_Click"/>
+                <Button Content="CLEAR" Click="ClearButton_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="CLOSE" Click="CloseButton_Click"/>
+                <Button x:Name="ImportButton" Content="IMPORT SELECTED" Click="ImportButton_Click"
+                        IsEnabled="False"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

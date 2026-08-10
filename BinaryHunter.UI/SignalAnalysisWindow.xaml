@@ -1,0 +1,38 @@
+<Window x:Class="BinaryHunter.UI.SignalAnalysisWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Signal / Peak analysis" Icon="Assets/BinaryHunter.ico" Width="820" Height="590"
+        MinWidth="680" MinHeight="460" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="#0D1117" Foreground="#EDF2F7" FontFamily="{StaticResource UiFont}">
+    <Window.Resources><Style TargetType="Button" BasedOn="{StaticResource FuturisticButton}"><Setter Property="Padding" Value="13,7"/><Setter Property="Margin" Value="4,0"/></Style></Window.Resources>
+    <Grid Margin="18">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <StackPanel Margin="0,0,0,12">
+            <TextBlock Text="SIGNAL / PEAK ANALYSIS" Foreground="#60A5FA" FontWeight="SemiBold" FontSize="{StaticResource MetadataFontSize}"/>
+            <TextBlock x:Name="ScopeText" Foreground="#778391" FontSize="{StaticResource MetadataFontSize}" Margin="0,5,0,0"/>
+        </StackPanel>
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,12">
+            <Border Background="#161C25" BorderBrush="#2B3441" BorderThickness="1" Padding="10" Margin="0,0,6,0"><StackPanel><TextBlock Text="RANGE" Foreground="#73737C" FontSize="{StaticResource CaptionFontSize}"/><TextBlock x:Name="RangeText" Foreground="#EDF2F7" Margin="0,4,0,0"/></StackPanel></Border>
+            <Border Background="#161C25" BorderBrush="#2B3441" BorderThickness="1" Padding="10" Margin="0,0,6,0"><StackPanel><TextBlock Text="MEAN / SIGMA" Foreground="#73737C" FontSize="{StaticResource CaptionFontSize}"/><TextBlock x:Name="MeanText" Foreground="#EDF2F7" Margin="0,4,0,0"/></StackPanel></Border>
+            <Border Background="#161C25" BorderBrush="#2B3441" BorderThickness="1" Padding="10" Margin="0,0,6,0"><StackPanel><TextBlock Text="NOISE / SNR" Foreground="#73737C" FontSize="{StaticResource CaptionFontSize}"/><TextBlock x:Name="NoiseText" Foreground="#FBBF24" Margin="0,4,0,0"/></StackPanel></Border>
+            <Border Background="#161C25" BorderBrush="#2B3441" BorderThickness="1" Padding="10"><StackPanel><TextBlock Text="ROUGHNESS / PEAKS" Foreground="#73737C" FontSize="{StaticResource CaptionFontSize}"/><TextBlock x:Name="PeakText" Foreground="#6BA1FF" Margin="0,4,0,0"/></StackPanel></Border>
+        </UniformGrid>
+        <DataGrid x:Name="PeaksGrid" Grid.Row="2" ItemsSource="{Binding Peaks}" AutoGenerateColumns="False"
+                  CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+                  Background="#10151D" Foreground="#EDF2F7" BorderBrush="#2B3441"
+                  RowBackground="#10151D" AlternatingRowBackground="#1B222D" GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Type" Binding="{Binding TypeLabel}" Width="90"/>
+                <DataGridTextColumn Header="Row" Binding="{Binding Row}" Width="70"/>
+                <DataGridTextColumn Header="Column" Binding="{Binding Column}" Width="80"/>
+                <DataGridTextColumn Header="HEX offset" Binding="{Binding HexOffset}" Width="125"/>
+                <DataGridTextColumn Header="Value" Binding="{Binding ValueText}" Width="*"/>
+                <DataGridTextColumn Header="Prominence" Binding="{Binding ProminenceText}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="3" Margin="0,14,0,0">
+            <Button Content="Go to selected peak" HorizontalAlignment="Left" Click="GoButton_Click"/>
+            <Button Content="Close" HorizontalAlignment="Right" Click="CloseButton_Click"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,56 @@
+<Window x:Class="BinaryHunter.UI.BookmarkManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Bookmarks" Icon="Assets/BinaryHunter.ico"
+        Width="720" Height="440" MinWidth="600" MinHeight="340"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="#0D1117" Foreground="#EDF2F7"
+        FontFamily="{StaticResource UiFont}">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,12">
+            <TextBlock Text="BOOKMARK MANAGER" Foreground="#6BA1FF"
+                       FontSize="{StaticResource MetadataFontSize}" FontWeight="SemiBold"/>
+            <TextBlock Margin="0,5,0,0" Foreground="#AAB4C0" FontSize="{StaticResource MetadataFontSize}"
+                       Text="Names and notes are editable. Project bookmarks are saved in the .bhproj file."/>
+        </StackPanel>
+
+        <DataGrid x:Name="BookmarksGrid" Grid.Row="1" ItemsSource="{Binding Bookmarks}"
+                  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                  SelectionMode="Single" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                  Background="#10151D" Foreground="#EDF2F7" BorderBrush="#2B3441"
+                  RowBackground="#10151D" AlternatingRowBackground="#1B222D"
+                  HorizontalGridLinesBrush="#2B3441" VerticalGridLinesBrush="#2B3441">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Slot" Binding="{Binding SlotLabel}" Width="52" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+                <DataGridTextColumn Header="HEX offset" Binding="{Binding HexOffset}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Length" Binding="{Binding Length}" Width="75" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Note" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="2" Margin="0,14,0,0">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Add current" Style="{StaticResource FuturisticButton}"
+                        Padding="13,7" Margin="0,0,7,0" Click="AddButton_Click"/>
+                <Button Content="Remove" Style="{StaticResource FuturisticButton}"
+                        Padding="13,7" Margin="0,0,7,0" Click="RemoveButton_Click"/>
+                <Button Content="Go to" Style="{StaticResource FuturisticButton}"
+                        Padding="13,7" Click="GoButton_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Style="{StaticResource FuturisticButton}"
+                        Padding="13,7" Margin="0,0,7,0" Click="CancelButton_Click"/>
+                <Button Content="Save bookmarks" Style="{StaticResource FuturisticButton}"
+                        Background="#4C8DFF" BorderBrush="#6BA1FF" Padding="13,7"
+                        Click="SaveButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
